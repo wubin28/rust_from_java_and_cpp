@@ -4,11 +4,25 @@
 package garbage_collection_example_java;
 
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
-
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        // 创建一个包含1000万个整数的大数组，消耗了大量内存
+        int[] largeArray = new int[1000000000];
+
+        // 遍历数组并赋值，模拟使用这个大数组的过程
+        for (int i = 0; i < largeArray.length; i++) {
+            largeArray[i] = i;
+        }
+
+        // 大数组的引用被设为null，表示不再需要这个对象
+        largeArray = null;
+
+        // 显式请求垃圾回收，但这是一个非强制性的建议，JVM会在合适的时候进行垃圾回收
+        System.gc(); // 这个过程何时发生是不可预测的
+
+        // 创建另一个包含1000万个整数的大数组，试图使用内存
+        int[] anotherArray = new int[1000000000];
+
+        // 打印提示信息，表明程序结束
+        System.out.println("Program completed");
     }
 }
