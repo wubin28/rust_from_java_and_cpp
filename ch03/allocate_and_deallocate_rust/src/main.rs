@@ -11,7 +11,7 @@ fn deallocate_memory(ptr: &mut *mut u8, layout: Layout) {
         // 使用unsafe块释放内存
         unsafe { dealloc(*ptr, layout) }
         // 将指针设置为空
-        *ptr = std::ptr::null_mut();
+        // *ptr = std::ptr::null_mut();
     }
 }
 
@@ -58,9 +58,10 @@ fn main() {
     allocate_and_deallocate();
     println!("程序执行完毕");
 }
-
 // 运行结果：
-// 成功分配内存，地址: 0x5587a396eba0
+// 成功分配内存，地址: 0x55acfc88bba0
 // 释放内存...
 // 内存释放成功
-// 程序执行完毕
+// 释放内存...
+// free(): double free detected in tcache 2
+// [1]    425211 IOT instruction (core dumped)  cargo run
