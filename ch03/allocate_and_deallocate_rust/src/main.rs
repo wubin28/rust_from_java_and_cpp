@@ -35,16 +35,13 @@ fn allocate_and_deallocate() {
         }
     }
 
-    // 释放内存，Rust的所有权机制确保内存只被释放一次
+    // 第一次释放内存
     deallocate_memory(ptr, layout);
 
     println!("内存释放成功");
 
-    // 尝试再次释放内存会在运行使导致错误，因为所有权已经被转移
-    // deallocate_memory(ptr, layout);
-    // 将上一行代码注释去掉，编译不会报错，但在运行时会出现如下错误：
-    // free(): double free detected in tcache 2
-    // [1]    340748 IOT instruction (core dumped)  cargo run
+    // 第二次释放内存
+    deallocate_memory(ptr, layout);
 }
 
 fn main() {
@@ -52,7 +49,9 @@ fn main() {
     println!("程序执行完毕");
 }
 // 运行结果：
-// 成功分配内存，地址: 0x582b5319dba0
+// 成功分配内存，地址: 0x562349a3eba0
 // 释放内存...
 // 内存释放成功
-// 程序执行完毕
+// 释放内存...
+// free(): double free detected in tcache 2
+// [1]    386352 IOT instruction (core dumped)  cargo run
