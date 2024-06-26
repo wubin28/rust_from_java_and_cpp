@@ -42,7 +42,7 @@ fn allocate_and_deallocate() {
 
     // 尝试再次释放内存会在运行使导致错误，因为所有权已经被转移
     // deallocate_memory(ptr, layout);
-    // 将上一行代码注释去掉，便宜不会报错，但在运行时会出现如下错误：
+    // 将上一行代码注释去掉，编译不会报错，但在运行时会出现如下错误：
     // free(): double free detected in tcache 2
     // [1]    340748 IOT instruction (core dumped)  cargo run
 }
