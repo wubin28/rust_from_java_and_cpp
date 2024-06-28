@@ -9,7 +9,8 @@ use jemallocator::Jemalloc;
 #[global_allocator]
 static GLOBAL: Jemalloc = Jemalloc;
 
-// 自定义一个包含大字符串的结构体，并实现 Drop trait
+// 自定义一个包含大字符串的结构体，并实现 Clone 和 Drop trait
+#[derive(Clone)]
 struct LargeStringOwner {
     // 包含一个字符串字段，但允许未使用（避免编译器警告）
     #[allow(dead_code)]
@@ -76,21 +77,33 @@ fn main() {
         println!("Memory before creating String: {} KB", memory_before);
 
         // 创建一个包含 100M 大字符串的自定义结构体
-        let _large_string_owner = LargeStringOwner::new(100_000_000); // 100 MB
+        let large_string_owner = LargeStringOwner::new(100_000_000); // 100 MB
+
+        // 深度克隆该结构体
+        let cloned_string_owner = large_string_owner.clone();
 
         // 获取创建大字符串后的内存使用情况
         let memory_after = get_memory_usage();
         // 打印创建大字符串后的内存使用情况
-        println!("Memory after creating String: {} KB", memory_after);
+        println!(
+            "Memory after creating and cloning String: {} KB",
+            memory_after
+        );
 
         // 使用标准库的断言宏 assert!，验证内存是否增加，否则中止程序，并打印错误信息
         assert!(memory_after > memory_before);
-    } // 这里作用域结束，`large_string_owner` 变量自动销毁，内存应该被释放
+
+        // 使用cloned_string_owner和large_string_owner确保内存不会在此处被释放
+        println!(
+            "Using large_string_owner and cloned_string_owner: {}",
+            large_string_owner.content.len() + cloned_string_owner.content.len()
+        );
+    } // 这里作用域结束，`large_string_owner`和`cloned_string_owner`变量自动销毁，内存应该被释放
 
     // 获取离开作用域后的内存使用情况
     let final_memory = get_memory_usage();
     // 打印离开作用域后的内存使用情况
-    println!("Memory after String is out of scope: {} KB", final_memory);
+    println!("Memory after Strings are out of scope: {} KB", final_memory);
 
     // 验证最终的内存使用是否接近初始值，允许有一些小波动
     assert!(final_memory <= initial_memory + 1_000); // 容许一点点波动
@@ -98,6 +111,8 @@ fn main() {
 // 运行结果:
 // Initial memory usage: 33 KB
 // Memory before creating String: 43 KB
-// Memory after creating String: 98347 KB
+// Memory after creating and cloning String: 196651 KB
+// Using large_string_owner and cloned_string_owner: 200000000
 // Dropping LargeStringOwner, releasing large string memory.
-// Memory after String is out of scope: 43 KB
+// Dropping LargeStringOwner, releasing large string memory.
+// Memory after Strings are out of scope: 43 KB
