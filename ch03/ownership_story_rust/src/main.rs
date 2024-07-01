@@ -7,11 +7,11 @@ fn ownership_move() {
 } // 函数结束，s2 离开作用域，内存自动被释放
 
 fn shallow_copy() {
-    let x = 42; // 整型变量 x，值保存在栈上
+    let x = 66; // 整型变量 x，值保存在栈上
     let y = x; // x 的值被拷贝到 y，这里发生的是浅拷贝
 
-    println!("x: {}", x); // x 仍然有效，输出 42
-    println!("y: {}", y); // y 拥有拷贝的值，输出 42
+    println!("x: {}", x); // x 仍然有效，输出 66
+    println!("y: {}", y); // y 拥有拷贝的值，输出 66
 } // 函数结束，x 和 y 离开作用域，没有动态内存需要释放
 
 fn main() {
@@ -20,5 +20,5 @@ fn main() {
 }
 // 运行结果：
 // s2: A house on the heap
-// x: 42
-// y: 42
+// x: 66
+// y: 66
